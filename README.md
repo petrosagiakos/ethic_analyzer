@@ -4,6 +4,8 @@
 
 This is a simple web application that analyzes a .csv or .xlsx file for ethical issues. For exapmle, it runs tests if the data has bias or fairness issues or there are other problems in the data like data leakage, overfitting, missing values etc.
 
+Video Description [link](https://youtu.be/ZMp2QLqMb84)
+
 ## Technologies Used
 
 In this project that tools that were used are:
@@ -30,3 +32,4 @@ In this project that tools that were used are:
 ## Contributor
 
     - Sagiakos Petros inf2023185
+
