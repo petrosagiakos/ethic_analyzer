@@ -1,0 +1,29 @@
+.file-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #0f172a;
+    border: 1px solid #1e293b;
+    padding: 10px 14px;
+    border-radius: 8px;
+    margin-bottom: 8px;
+}
+
+.file-row span {
+    color: #e5e7eb;
+    font-size: 14px;
+}
+
+.file-actions button {
+    margin-left: 8px;
+    padding: 6px 12px;
+    border-radius: 6px;
+    background: #1e40af;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+.file-actions .danger {
+    background: #7f1d1d;
+}

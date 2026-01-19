@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ML Fairness Dashboard</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/files.css') }}">
+</head>
+<body>
+
+<h1>Machine Learning Audit Dashboard</h1>
+
+<div class="grid-container">
+
+    <!-- LEFT COLUMN -->
+    <div class="left-column">
+
+        <div class="card">
+            <h2>Upload Dataset</h2>
+            <form action="{{ url_for('index') }}" method="post" enctype="multipart/form-data">
+                <input type="file" name="file">
+                <button type="submit">Upload</button>
+            </form>
+        </div>
+
+        {% if col_names %}
+        <div class="card">
+            <h2>Select Target Variable</h2>
+            <select id="global_var">
+                {% for col in col_names %}
+                    <option value="{{ col }}">{{ col }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        {% endif %}
+
+        {% if table %}
+        <div class="card">
+            <h2>Dataset Preview</h2>
+            <div class="table-wrapper">
+                {{ table|safe }}
+            </div>
+            <p><strong>Rows:</strong> {{ nrows }}</p>
+            <p><strong>Columns:</strong> {{ ncols }}</p>
+            <div class="data_types">
+            <table>
+                <thead>
+                <tr>
+                    {% for cn in col_names%}
+                    <th>{{cn}}</th>
+                    {% endfor %}
+                </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        {% for dt in dtypes%}
+                            <td>{{dt}}</td>
+                        {% endfor %}
+                    </tr>
+                </tbody>
+            </table>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- RIGHT COLUMN -->
+    <div class="right-column">
+
+        {% if file %}
+        <div class="card">
+    <h2>Run Checks</h2>
+
+    <div class="button-grid">
+        <button onclick="runCheck('imbalance','{{file}}')">Class Imbalance</button>
+        <button onclick="runCheck('demo_bias','{{file}}')">Demographic Bias</button>
+        <button onclick="runCheck('representation','{{file}}')">Representation</button>
+
+        <button onclick="runCheck('correlation','{{file}}')">Correlation</button>
+        <button onclick="runCheck('overfitting','{{file}}')">Overfitting</button>
+        <button onclick="runCheck('leakage','{{file}}')">Data Leakage</button>
+
+        <button onclick="runCheck('missing_values','{{file}}')">Missing Values</button>
+        <button onclick="runCheck('outliers','{{file}}')">Outliers</button>
+    </div>
+</div>
+        {% endif %}
+
+        <div class="card results">
+            <h2>Results</h2>
+            <div id="resultsArea">
+                <p class="hint">Run a check to see results here.</p>
+            </div>
+        </div>
+        <div id="filesArea"></div>
+    </div>
+</div>
+
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+<script src="{{ url_for('static', filename='js/files.js') }}"></script>
+</body>
+</html>

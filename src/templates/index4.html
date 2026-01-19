@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ML Dashboard</title>
+
+    <style>
+/* ---------------- GLOBAL STYLE ---------------- */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Inter", Arial, sans-serif;
+}
+
+body {
+    background: #f5f6fa;
+    padding: 40px;
+    color: #333;
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+/* ---------------- LAYOUT CARDS ---------------- */
+.card {
+    background: #fff;
+    padding: 25px;
+    border-radius: 12px;
+    margin-bottom: 25px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+}
+
+label {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 8px;
+}
+
+select {
+    width: 100%;
+    padding: 10px;
+    border-radius: 8px;
+    margin-top: 10px;
+    border: 1px solid #ccc;
+}
+
+/* ---------------- BUTTONS ---------------- */
+button {
+    background: #0984e3;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 6px;
+    border: none;
+    margin-bottom: 10px;
+    cursor: pointer;
+    transition: 0.2s;
+    width: 100%;
+    font-size: 15px;
+}
+button:hover {
+    background: #74b9ff;
+}
+
+/* ---------------- MODAL ---------------- */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 99999;
+    padding-top: 80px;
+    left: 0; top: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.55);
+}
+.modal-content table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 10px;
+    max-height: 300px;     /* limit table height */
+    overflow-y: auto;
+    display: block;
+}
+.modal-content {
+    background: #fff;
+    margin: auto;
+    padding: 25px;
+    border-radius: 12px;
+    width: 60%;
+}
+
+.close {
+    float: right;
+    font-size: 28px;
+    cursor: pointer;
+}
+
+pre {
+    background: #f1f2f6;
+    padding: 15px;
+    border-radius: 8px;
+    white-space: pre-wrap;
+}
+.modal-content ul {
+    list-style: none;
+    padding-left: 0;
+}
+.modal-content li {
+    margin-bottom: 8px;
+}
+.modal-content h3 {
+    margin-bottom: 10px;
+    color: #0984e3;
+}
+.modal-content p {
+    font-size: 14px;
+    color: #2d3436;
+}
+.modal-content {
+    max-height: 70vh;  /* 70% of viewport height */
+    overflow-y: auto;  /* scroll if content exceeds */
+    padding: 20px;
+    background: #fff;
+    border-radius: 10px;
+}
+
+.modal-content table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 10px;
+}
+
+.modal-content th, .modal-content td {
+    border: 1px solid #ccc;
+    padding: 6px;
+    text-align: left;
+    font-size: 14px;
+}
+
+.collapsible {
+    cursor: pointer;
+    font-weight: 600;
+    margin: 8px 0;
+    background: #f0f0f0;
+    padding: 5px 10px;
+    border-radius: 5px;
+}
+
+.content-collapsible {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease-out;
+    margin-bottom: 10px;
+    padding-left: 10px;
+}
+    </style>
+</head>
+<body>
+
+<h1>Machine Learning Dashboard</h1>
+
+
+<!-- ===================== SECTION 1: FILE UPLOAD ===================== -->
+<div class="card">
+    <h2>Upload CSV</h2>
+    <form action="{{ url_for('upload_file') }}" method="post" enctype="multipart/form-data">
+        <input type="file" name="file">
+        <button type="submit">Upload</button>
+    </form>
+</div>
+
+
+<!-- ===================== SECTION 2: DATA PREVIEW ===================== -->
+{% if table %}
+<div class="card">
+    <h2>Dataset Preview</h2>
+    {{ table|safe }}
+
+    <p><strong>Rows:</strong> {{ nrows }}</p>
+    <p><strong>Columns:</strong> {{ ncols }}</p>
+    <p><strong>Column Names:</strong> {{ col_names }}</p>
+    <p><strong>Column Types:</strong> {{ dtypes }}</p>
+</div>
+{% endif %}
+
+
+<!-- ===================== SECTION 3: SELECT VARIABLE ===================== -->
+{% if col_names %}
+<div class="card">
+    <h2>Select Variable for Analysis</h2>
+
+    <label for="global_var">Choose column:</label>
+    <select id="global_var">
+        {% for col in col_names %}
+            <option value="{{ col }}">{{ col }}</option>
+        {% endfor %}
+    </select>
+</div>
+{% endif %}
+
+
+<!-- ===================== SECTION 4: ANALYSIS BUTTONS ===================== -->
+{% if file %}
+<div class="card">
+    <h2>Run Analysis</h2>
+
+    <button onclick="runCheck('imbalance', '{{file}}')">Class Imbalance Check</button>
+    <button onclick="runCheck('demo_bias', '{{file}}')">Demographic Bias Check</button>
+    <button onclick="runCheck('representation', '{{file}}')">Representation Check</button>
+    <button onclick="runCheck('correlation', '{{file}}')">Correlation Check</button>
+    <button onclick="runCheck('overfitting', '{{file}}')">Overfitting Check</button>
+    <button onclick="runCheck('leakage', '{{file}}')">Data Leakage Check</button>
+    <button onclick="runCheck('missing_values', '{{file}}')">Missing Values Check</button>
+    <button onclick="runCheck('outliers', '{{file}}')">Outliers Impact Check</button>
+</div>
+{% endif %}
+
+
+<!-- ===================== MODAL POPUP ===================== -->
+<div id="resultModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <h2>Analysis Result</h2>
+        <div id="var"></div>
+        <div id="modalBody"></div>
+    </div>
+</div>
+
+
+
+<!-- ===================== JAVASCRIPT ===================== -->
+<script>
+/* =============================================================
+   FUNCTION: open modal with analysis results
+============================================================= */
+function openModal(html) {
+    document.getElementById("modalBody").innerHTML = html;
+    document.getElementById("resultModal").style.display = "block";
+    let variable=document.getElementById("global_var").value;
+    document.getElementById("var").innerHTML="Variable : "+variable;
+      enableCollapsible();
+}
+
+function closeModal() {
+    document.getElementById("resultModal").style.display = "none";
+}
+
+const checkExplanations = {
+    imbalance: "Checks if classes in your target variable are imbalanced. If some classes have very few samples, this may affect model performance.",
+    demo_bias: "Analyzes if protected attributes (like gender, race) have biased representation in your target.",
+    representation: "Counts the distribution of protected attributes and identifies underrepresented groups.",
+    correlation: "Checks correlations between protected attributes and the target variable to detect potential bias.",
+    overfitting: "Analyzes the dataset for potential overfitting risks: too many features vs samples and high correlations between features.",
+    leakage: "Detects features that may cause data leakage (i.e., containing information about the target variable).",
+    missing_values: "Checks for missing values in the dataset and their potential impact.",
+    outliers: "Detects extreme values (outliers) and estimates their potential impact on the data."
+};
+/* =============================================================
+   FUNCTION: Call Flask backend using fetch()
+   - Sends the selected variable
+   - Receives JSON response
+   - Displays results in modal
+============================================================= */
+function runCheck(endpoint, fileName) {
+    const variable = document.getElementById("global_var").value;
+    fetch(`/${endpoint}/${fileName}`, {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({ var: variable })
+    })
+    .then(response => response.json())
+    .then(result => {
+        const modalContent = renderResults(endpoint, result);
+        openModal(modalContent);  // your modal function
+    })
+    .catch(err => {
+        openModal(`<p style='color:red;'>Error: ${err}</p>`);
+    });
+}
+function renderResults(check, result) {
+    let html = `<h3>${check.charAt(0).toUpperCase() + check.slice(1)} Check</h3>`;
+    html += `<p>${checkExplanations[check]}</p>`;
+
+    for (const key in result) {
+        let value = result[key];
+
+        // If value is an object and big, make it collapsible
+        if (typeof value === 'object' && value !== null) {
+            html += `<div class="collapsible">${key} (click to expand)</div>`;
+            html += `<div class="content-collapsible">${objectToTable(value)}</div>`;
+        } else {
+            html += `<p><strong>${key}:</strong> ${value}</p>`;
+        }
+    }
+  
+    return html;
+}
+
+// function to convert object to simple table
+function objectToTable(obj) {
+    let html = '<table><thead><tr><th>Key</th><th>Value</th></tr></thead><tbody>';
+
+    for (const k in obj) {
+        let value = obj[k];
+
+        if (typeof value === 'object' && value !== null) {
+            // If nested object or array, call recursively
+            html += `<tr><td>${k}</td><td>${objectToTable(value)}</td></tr>`;
+        } else {
+            html += `<tr><td>${k}</td><td>${value}</td></tr>`;
+        }
+    }
+
+    html += '</tbody></table>';
+    return html;
+}
+function enableCollapsible() {
+    const coll = document.querySelectorAll(".collapsible");
+    coll.forEach(el => {
+        // Remove previous event listeners to prevent duplicates
+        el.replaceWith(el.cloneNode(true));
+    });
+
+    const newColl = document.querySelectorAll(".collapsible");
+    newColl.forEach(el => {
+        el.addEventListener("click", () => {
+            el.classList.toggle("active");
+            const content = el.nextElementSibling;
+            if (content.style.maxHeight && content.style.maxHeight !== "0px") {
+                content.style.maxHeight = "0px";
+            } else {
+                content.style.maxHeight = content.scrollHeight + "px";
+            }
+        });
+    });
+}
+
+// call after rendering modal content
+
+</script>
+
+</body>
+</html>

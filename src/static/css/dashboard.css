@@ -1,0 +1,263 @@
+* {
+    box-sizing: border-box;
+    font-family: Inter, Arial, sans-serif;
+}
+
+body {
+    background: #0f172a;               /* dark navy */
+    color: #e5e7eb;
+    padding: 30px;
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 30px;
+    color: #e2e8f0;
+}
+
+.grid-container {
+    display: grid;
+    grid-template-columns: 40% 60%;
+    gap: 25px;
+}
+
+/* ---------------- CARDS ---------------- */
+.card {
+    background: #020617;               /* dark panel */
+    padding: 20px;
+    border-radius: 14px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.6);
+    margin-bottom: 20px;
+    border: 1px solid #1e293b;
+}
+
+.card h2 {
+    color: #c7d2fe;
+    margin-bottom: 15px;
+}
+
+/* ---------------- INPUTS ---------------- */
+select,
+input[type="file"] {
+    width: 100%;
+    padding: 10px;
+    margin-top: 8px;
+    border-radius: 8px;
+    background: #020617;
+    color: #e5e7eb;
+    border: 1px solid #334155;
+}
+
+/* ---------------- BUTTON GRID ---------------- */
+.button-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+}
+
+/* ---------------- BUTTONS ---------------- */
+button {
+    background: linear-gradient(135deg, #1e40af, #1d4ed8); /* soft dark blue */
+    color: #e5e7eb;
+    padding: 10px;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.2s ease;
+}
+
+button:hover {
+    background: linear-gradient(135deg, #2563eb, #3b82f6);
+    transform: translateY(-1px);
+}
+
+button:active {
+    transform: scale(0.98);
+}
+
+/* ---------------- RESULTS ---------------- */
+.results {
+    min-height: 300px;
+}
+
+.result-section {
+    margin-bottom: 12px;
+}
+
+/* ---------------- COLLAPSIBLE ---------------- */
+
+
+.collapsible {
+    background-color: #1e2a3a;
+    color: #cfd8ff;
+    padding: 12px 16px;
+    cursor: pointer;
+    border-radius: 8px;
+    font-weight: 600;
+}
+
+
+/* ---------------- TABLE PREVIEW ---------------- */
+
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+}
+
+th, td {
+    padding: 6px;
+    border: 1px solid #1e293b;
+}
+
+th {
+    background: #020617;
+    color: #93c5fd;
+}
+
+/* ---------------- JSON PRETTY ---------------- */
+pre {
+    background: #020617;
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 13px;
+    color: #e5e7eb;
+    border: 1px solid #1e293b;
+}
+
+/* ---------------- SCROLLBAR (optional) ---------------- */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #334155;
+    border-radius: 6px;
+}
+
+
+/* Content container */
+.content {
+    overflow: hidden;
+    max-height: 0;
+    transition: max-height 0.35s ease;
+    background-color: #111827;
+    border-radius: 0 0 8px 8px;
+}
+
+/* JSON blocks */
+.content pre {
+    padding: 16px;
+    font-size: 13px;
+    white-space: pre-wrap;
+    word-break: break-word;
+    color: #e5e7eb;
+}
+
+/* SUMMARY SPECIAL STYLING */
+.summary-content {
+    padding: 0;
+}
+.content.expanded {
+    padding: 18px 22px;
+}
+
+.summary-text {
+    font-size: 15px;
+    line-height: 1.7;
+    color: #e0e7ff;
+    white-space: pre-wrap;
+}
+
+/* Make summary visually different */
+.summary-section .collapsible {
+    background: linear-gradient(135deg, #1e3a8a, #1e40af);
+    color: #eef2ff;
+}
+
+.table-wrapper {
+    width: 100%;           /* Fill the parent container */
+    max-width: 100%;       /* Never exceed parent width */
+    overflow-x: auto;      /* Horizontal scroll if table is too wide */
+    overflow-y: hidden;    /* Hide vertical overflow */
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+/* Style the table */
+.table-wrapper table {
+    border-collapse: collapse;
+    width: 100%;
+    table-layout: auto;   /* auto keeps column widths natural */
+}
+
+/* Table headers */
+.table-wrapper th, .table-wrapper td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+    white-space: nowrap; /* prevents content wrapping inside cell */
+}
+
+/* Optional: hover effect for rows */
+.table-wrapper tr:hover {
+    background-color: #f2f2f2;
+}
+
+/* Optional: style header differently */
+.table-wrapper th {
+    background-color: #1d1d1d;
+    color: rgb(196, 194, 194);
+    position: sticky;   /* keeps headers visible when scrolling */
+    top: 0;
+}
+/* Card styling */
+.card {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 15px;
+    margin: 15px 0;
+    
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+/* Dataset preview wrapper (if table HTML comes from Flask) */
+.table-wrapper {
+    overflow-x: auto; /* horizontal scroll if wide */
+    margin-bottom: 15px;
+}
+
+/* Data types table wrapper */
+.data_types {
+    overflow-x: auto; /* horizontal scroll if table is wide */
+    margin-top: 15px;
+}
+
+/* Table styling */
+.data_types table {
+    width: 100%;           /* fit card width */
+    border-collapse: collapse;
+    table-layout: auto;    /* auto column widths */
+}
+
+/* Table cells and headers */
+.data_types th, .data_types td {
+    border: 1px solid #ccc;
+    padding: 8px;
+    text-align: left;
+    white-space: nowrap; /* prevent wrapping */
+}
+
+/* Table header styling */
+.data_types th {
+    background-color: #1d1d1d;
+    font-weight: bold;
+    color: #ccc;
+}
+
+/* Optional: row hover effect */
+.data_types tr:hover {
+    background-color: #f9f9f9;
+}
