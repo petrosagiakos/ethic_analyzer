@@ -7,6 +7,7 @@ This is a simple web application that analyzes a .csv or .xlsx file for ethical 
 ## Technologies Used
 
 In this project that tools that were used are:
+
     - python programing language
     - flask and scipy.stats libraries
     - docker and docker compose
